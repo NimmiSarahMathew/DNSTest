@@ -28,25 +28,6 @@ the rest of the original app's complexity in the way.
   failure rate, average interval) when stopped.
 - Shows the same data live in a simple Compose screen while it runs.
 
-## What it does *not* establish (yet)
-
-The DNS check itself is straightforward. The harder part — actually proving
-the background-vs-foreground hypothesis — needs one of two things this repo
-doesn't currently do:
-
-- **Real extended-usage evidence**: correlating each check's timestamp
-  against whether the app was foregrounded or backgrounded at that moment
-  (via `ProcessLifecycleOwner`), run over hours of real usage, so failures
-  can be checked for clustering during background windows.
-- **A forced reproduction**: an instrumented test that forces the device
-  into Doze (`adb shell dumpsys deviceidle force-idle`) and checks DNS
-  immediately after, as a fast, repeatable — if narrower — signal. This only
-  covers the Doze mechanism specifically, not App Standby buckets or
-  OEM-specific battery management layered on top of stock Android.
-
-Neither is implemented here. This repo is the isolated repro of the check
-itself, not the finished investigation.
-
 ## Structure
 
 ```
@@ -58,9 +39,3 @@ DNSMonitorScreen.kt    the Compose UI showing live counts and the last result
 MainActivity.kt        wires the two together; builds the log file and
                        supplies it to DnsMonitor via a ViewModelProvider.Factory
 ```
-
-## Running it
-
-Open in Android Studio, sync Gradle, run on an emulator or device (minSdk
-24). The log file path is shown on screen; failures (if any) and the final
-summary land there.
